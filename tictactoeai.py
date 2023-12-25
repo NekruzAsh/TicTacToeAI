@@ -4,29 +4,95 @@ import random
 def nextMove(row, col):
     global player
     if buttons[row][col]["text"] == "" and checkWinner() is False:
-        if player == players[0]:
-            buttons[row][col]["text"] = player
-            if checkWinner() is False:
+        buttons[row][col]["text"] = player
+        if checkWinner() is False:
+            if player == players[0]:
                 player = players[1]
                 label.config(text=players[1] + " turn")
-
-            elif checkWinner() is True:
-                label.config(text=players[0] + " wins!")
-
-            elif checkWinner() == "Tie!":  # Updated comparison
-                label.config(text="Tie!")
-
-        else:
-            buttons[row][col]["text"] = player
-            if checkWinner() is False:
+                if mode.get() == "AI":
+                    makeAIMove()
+            else:
                 player = players[0]
                 label.config(text=players[0] + " turn")
+        
+def makeAIMove():
+    global player
+    global ai_player
+    row, col = findBestMove(ai_player)
 
-            elif checkWinner() is True:
-                label.config(text=players[1] + " wins!")
+    if buttons[row][col]["text"] == "":
+        buttons[row][col]["text"] = ai_player
+        if checkWinner() is False:
+            player = players[0] if player == players[1] else players[1]  # Update player turn
+            label.config(text=player + " turn")
+        elif checkWinner() is True:
+            label.config(text=ai_player + " wins!")
+        elif checkWinner() == "Tie!":
+            label.config(text="Tie!")
 
-            elif checkWinner() == "Tie!":  # Updated comparison
-                label.config(text="Tie!")
+        # Update button colors for AI mode
+        updateButtonColors()
+
+def updateButtonColors():
+    for row in range(3):
+        for col in range(3):
+            if buttons[row][col]["text"] == players[0]:
+                buttons[row][col].config(bg="green")
+            elif buttons[row][col]["text"] == players[1]:
+                buttons[row][col].config(bg="blue")
+            else:
+                buttons[row][col].config(bg="white")
+
+
+def findBestMove(current_player):
+    bestScore = -float('inf')
+    bestMove = (-1, -1)
+
+    for row in range(3):
+        for col in range(3):
+            if buttons[row][col]["text"] == "":
+                buttons[row][col]["text"] = current_player
+                score = minimax(0, False, current_player)
+                buttons[row][col]["text"] = ""
+
+                if score > bestScore:
+                    bestScore = score
+                    bestMove = (row, col)
+
+    return bestMove
+
+
+
+def minimax(depth, isMaximizing, current_player):
+    global ai_player
+    opponent = players[0] if current_player == ai_player else ai_player
+
+    if checkWinner():
+        if checkWinner() == "Tie!":
+            return 0
+        return -1 if isMaximizing else 1
+
+    if isMaximizing:
+        bestScore = -float('inf')
+        for row in range(3):
+            for col in range(3):
+                if buttons[row][col]["text"] == "":
+                    buttons[row][col]["text"] = current_player
+                    score = minimax(depth + 1, False, opponent)
+                    buttons[row][col]["text"] = ""
+                    bestScore = max(score, bestScore)
+        return bestScore
+    else:
+        bestScore = float('inf')
+        for row in range(3):
+            for col in range(3):
+                if buttons[row][col]["text"] == "":
+                    buttons[row][col]["text"] = current_player
+                    score = minimax(depth + 1, True, opponent)
+                    buttons[row][col]["text"] = ""
+                    bestScore = min(score, bestScore)
+        return bestScore
+
 
 def checkWinner():
     for row in range(3):
@@ -81,9 +147,10 @@ def checkEmptySpaces():
         return True
 
 def newGame():
-    
     global player
+    global ai_player
     player = random.choice(players)
+    ai_player = players[1] if player == players[0] else players[0]  # Set ai_player opposite of player
     label.config(text=player + " turn")
 
     for row in range(3):
@@ -95,13 +162,11 @@ window.title("Tic Tac Toe AI")
 
 players = ["x", "o"]
 player = random.choice(players)
-buttons = [[0,0,0],
-           [0,0,0],
-           [0,0,0]]
+buttons = [[0, 0, 0],
+           [0, 0, 0],
+           [0, 0, 0]]
 
-
-
-label = Label(text= player + " turn", font=("Helvetica", 40))
+label = Label(text=player + " turn", font=("Helvetica", 40))
 label.pack(side="top")
 
 resetButton = Button(text="New Game", font=("Helvetica", 32), command=newGame)
@@ -110,9 +175,17 @@ resetButton.pack(side="bottom", pady=70)
 frame = Frame(window)
 frame.pack()
 
+mode = StringVar()
+mode.set("Player")
+
+modeMenu = OptionMenu(window, mode, "Player", "AI")
+modeMenu.config(font=("Helvetica", 20)) 
+modeMenu.pack(side="bottom", pady=20) 
+
 for row in range(3):
     for col in range(3):
-        buttons[row][col] = Button(frame, text="", font=("Helvetica", 32), width=5, height=2, command=lambda row=row, col=col: nextMove(row, col))
+        buttons[row][col] = Button(frame, text="", font=("Helvetica", 32), width=5, height=2,
+                                    command=lambda row=row, col=col: nextMove(row, col))
         buttons[row][col].grid(row=row, column=col)
 
 window.geometry("700x700")
