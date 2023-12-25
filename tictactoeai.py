@@ -1,16 +1,32 @@
 
-#TicTacToe AI game using Python
+from tkinter import *
+import random
 
-def new_board():
-    return [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
+def drawBoard(board):
+    pass
 
-board = new_board()
+def nextMove(board, player):
+    pass
 
-board[0][1] = 'X'
-board[1][1] = 'O'
+def checkWinner(board):
+    pass
 
-def printBoard(board):
-    print(board)
+def checkEmptySpaces(board):
+    pass
 
-printBoard(board)
+def newGame():
+    pass
+
+
+players = ["x", "o"]
+player = random.choice(players)
+buttons = [[0,0,0],
+           [0,0,0],
+           [0,0,0]]
+
+
+window = Tk()
+window.title("Tic Tac Toe AI")
+window.geometry("700x700")
+window.mainloop()
 
