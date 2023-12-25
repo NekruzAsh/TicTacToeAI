@@ -81,7 +81,14 @@ def checkEmptySpaces():
         return True
 
 def newGame():
-    pass
+    
+    global player
+    player = random.choice(players)
+    label.config(text=player + " turn")
+
+    for row in range(3):
+        for col in range(3):
+            buttons[row][col].config(text="", bg="white")
 
 window = Tk()
 window.title("Tic Tac Toe AI")
@@ -98,7 +105,7 @@ label = Label(text= player + " turn", font=("Helvetica", 40))
 label.pack(side="top")
 
 resetButton = Button(text="New Game", font=("Helvetica", 32), command=newGame)
-resetButton.pack(side="top")
+resetButton.pack(side="bottom", pady=70)
 
 frame = Frame(window)
 frame.pack()
