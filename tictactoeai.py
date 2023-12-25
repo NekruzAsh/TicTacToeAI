@@ -4,6 +4,30 @@ import random
 
 def nextMove(row, col):
     global player
+    if buttons[row][col]["text"] == "" and checkWinner() is False:
+        if player == players[0]:
+            buttons[row][col]["text"] = players
+            if checkWinner() is False:
+                player = players[1]
+                label.config(text=players[1] + " turn")
+
+            elif checkWinner() is True:
+                label.config(text=players[0] + " wins!")
+
+            elif checkWinner() == "Tie":
+                label.config(text="Tie!")
+
+        else:
+            buttons[row][col]["text"] = players
+            if checkWinner() is False:
+                player = players[0]
+                label.config(text=players[0] + " turn")
+
+            elif checkWinner() is True:
+                label.config(text=players[1] + " wins!")
+
+            elif checkWinner() == "Tie":
+                label.config(text="Tie!")
 
 def checkWinner(board):
     pass
