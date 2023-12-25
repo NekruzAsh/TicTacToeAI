@@ -30,7 +30,26 @@ def nextMove(row, col):
                 label.config(text="Tie!")
 
 def checkWinner(board):
-    pass
+    for row in range(3):
+        if buttons[row][0]["text"] == buttons[row][1]["text"] == board[row][2]["text"] != "":
+            return True
+        
+    for col in range(3):
+        if buttons[0][col]["text"] == buttons[1][col]["text"] == board[2][col]["text"] != "":
+            return True
+        
+    if buttons[0][0]["text"] == buttons[1][1]["text"] == board[2][2]["text"] != "":
+        return True
+    
+    elif buttons[0][2]["text"] == buttons[1][1]["text"] == board[2][0]["text"] != "":
+        return True
+    
+    elif checkEmptySpaces() is False:
+        return "Tie!"
+    
+    else:
+        return False
+
 
 def checkEmptySpaces(board):
     pass
