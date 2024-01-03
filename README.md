@@ -8,7 +8,7 @@
 # About
 * This is a simple TicTacToe game made using Python libraries and includes two different game modes Player Vs. Player and Player Vs. AI.
 ### Instructions
-* Download and run the file using VS studios
+* Download and run the file using any IDE.
 * Run the program in Fullscreen for best experience.
 * Make sure to play as 'X' for Player Vs. AI as playing as 'O' is reserved for the AI
 * Also, when switching to different game mode make sure to hit new game to refresh the page
